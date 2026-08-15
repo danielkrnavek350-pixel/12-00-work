@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState } from 'react';
-import { Platform, Pressable, StyleSheet, Text, View } from 'react-native';
+import { TextInput, Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 import { colors, typography } from '../lib/theme';
 import { Search, X } from 'lucide-react-native';
 
@@ -13,11 +13,11 @@ export function SearchBar({ value, onChange }: Props) {
   return (
     <View style={styles.wrap}>
       <Search size={18} color={colors.text3} style={styles.icon} />
-      <input
+      <TextInput
         value={value}
-        onChange={(e) => onChange((e.target as HTMLInputElement).value)}
+        onChangeText={(text: string) => onChange(text)}
         placeholder="Hledat úkoly nebo čas (např. 14:00)…"
-        style={webStyles.input}
+        style={webStyles.input as any}
       />
       {value ? (
         <Pressable onPress={clear} hitSlop={10} style={styles.clearBtn}>
@@ -51,11 +51,11 @@ const webStyles = {
     flex: 1,
     backgroundColor: 'transparent',
     color: colors.text,
-    border: 'none',
-    outline: 'none',
+    
+    
     fontSize: 15,
     fontFamily: 'inherit',
-    padding: '10px 0',
+    padding: 10,
     width: '100%',
   },
 };

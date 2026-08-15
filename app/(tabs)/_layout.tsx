@@ -1,64 +1,28 @@
+import React from 'react';
 import { Tabs } from 'expo-router';
-import { Platform, StyleSheet, View } from 'react-native';
-import { colors } from '@/lib/theme';
-import { haptic } from '@/lib/haptics';
-import { CheckSquare, BarChart3, Settings } from 'lucide-react-native';
+import { Text } from 'react-native';
 
-export default function TabLayout() {
+export default function TabsLayout() {
   return (
     <Tabs
-      screenListeners={{
-        tabPress: () => haptic('light'),
-      }}
       screenOptions={{
         headerShown: false,
+        tabBarActiveTintColor: '#A855F7',
+        tabBarInactiveTintColor: '#6B7280',
         tabBarStyle: {
-          backgroundColor: 'rgba(21, 10, 33, 0.82)',
-          borderTopColor: colors.hairline,
+          backgroundColor: '#120C24',
+          borderTopColor: '#231A3D',
           borderTopWidth: 1,
-          height: Platform.OS === 'web' ? 60 : 64,
-          paddingBottom: Platform.OS === 'web' ? 8 : 12,
+          height: 65,
+          paddingBottom: 10,
           paddingTop: 8,
-          ...(Platform.OS === 'web'
-            ? {
-                backdropFilter: 'blur(20px)',
-                WebkitBackdropFilter: 'blur(20px)',
-              }
-            : {}),
-        },
-        tabBarActiveTintColor: colors.primary,
-        tabBarInactiveTintColor: colors.text3,
-        tabBarLabelStyle: {
-          fontSize: 12,
-          fontFamily: 'Inter-Regular',
-          marginTop: 2,
-        },
-        tabBarItemStyle: {
-          padding: 0,
         },
       }}
     >
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: 'Úkoly',
-          tabBarIcon: ({ size, color }) => <CheckSquare size={size} color={color} />,
-        }}
-      />
-      <Tabs.Screen
-        name="statistiky"
-        options={{
-          title: 'Statistiky',
-          tabBarIcon: ({ size, color }) => <BarChart3 size={size} color={color} />,
-        }}
-      />
-      <Tabs.Screen
-        name="nastaveni"
-        options={{
-          title: 'Nastavení',
-          tabBarIcon: ({ size, color }) => <Settings size={size} color={color} />,
-        }}
-      />
+      <Tabs.Screen name="index" options={{ title: 'Úkoly', tabBarIcon: () => <Text style={{fontSize:20}}>✅</Text> }} />
+      <Tabs.Screen name="statistics" options={{ title: 'Statistiky', tabBarIcon: () => <Text style={{fontSize:20}}>📊</Text> }} />
+      <Tabs.Screen name="calendar" options={{ title: 'Kalendář', tabBarIcon: () => <Text style={{fontSize:20}}>📅</Text> }} />
+      <Tabs.Screen name="settings" options={{ title: 'Nastavení', tabBarIcon: () => <Text style={{fontSize:20}}>⚙️</Text> }} />
     </Tabs>
   );
 }

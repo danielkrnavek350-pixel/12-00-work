@@ -5,7 +5,7 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "myapp",
+    "scheme": "cosmic-app",
     "userInterfaceStyle": "dark",
     "newArchEnabled": true,
     "ios": {
@@ -35,7 +35,9 @@
       "router": {},
       "eas": {
         "projectId": "c78cf264-7286-4bc9-971f-ad53c84757b7"
-      }
+      },
+      "EXPO_PUBLIC_SUPABASE_URL": "https://ajxbcuafrmqofivvaqfh.supabase.co",
+      "EXPO_PUBLIC_SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFqeGJjdWFmcm1xb2ZpdnZhcWZoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU1MDA5NzgsImV4cCI6MjEwMTA3Njk3OH0.xIQx_kJvyEdlpfX3LrRzGHkF3lvREkVRHq22jz7_kiI"
     },
     "android": {
       "package": "com.danielkrnavek.mojeukoly",
@@ -44,4 +46,5 @@
         "backgroundColor": "#ffffff"
       }
     }
-
+  }
+}

@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
 import type { Session, User } from '@supabase/supabase-js';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { supabase } from './supabase';
 
 interface AuthState {
@@ -15,7 +16,6 @@ interface AuthState {
 }
 
 const AuthContext = createContext<AuthState | undefined>(undefined);
-
 const GUEST_KEY = '@guest_mode';
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -24,42 +24,45 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isGuest, setIsGuest] = useState(false);
 
   useEffect(() => {
-    (async () => {
-      const { data } = await supabase.auth.getSession();
-      setSession(data.session);
-      setLoading(false);
-    })();
+    let mounted = true;
+
+    async function initAuth() {
+      try {
+        const { data } = await supabase.auth.getSession();
+        if (mounted) setSession(data.session);
+      } catch (e) {
+        console.error(e);
+      } finally {
+        if (mounted) setLoading(false);
+      }
+    }
+
+    initAuth();
 
     const { data: sub } = supabase.auth.onAuthStateChange((_event, sess) => {
-      (async () => {
-        setSession(sess);
-        if (sess) {
-          setIsGuest(false);
-          try {
-            const AsyncStorage = (await import('@react-native-async-storage/async-storage')).default;
-            await AsyncStorage.removeItem(GUEST_KEY);
-          } catch {
-            // ignore
-          }
-        }
-      })();
+      setSession(sess);
+      if (sess) {
+        setIsGuest(false);
+        AsyncStorage.removeItem(GUEST_KEY).catch(() => {});
+      }
     });
 
     return () => {
+      mounted = false;
       sub.subscription.unsubscribe();
     };
   }, []);
 
   useEffect(() => {
-    (async () => {
+    async function checkGuest() {
       try {
-        const AsyncStorage = (await import('@react-native-async-storage/async-storage')).default;
         const g = await AsyncStorage.getItem(GUEST_KEY);
         if (g === '1' && !session) setIsGuest(true);
-      } catch {
+      } catch (e) {
         // ignore
       }
-    })();
+    }
+    checkGuest();
   }, [session]);
 
   const value = useMemo<AuthState>(
@@ -81,36 +84,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setSession(null);
         setIsGuest(false);
         try {
-          const AsyncStorage = (await import('@react-native-async-storage/async-storage')).default;
           await AsyncStorage.removeItem(GUEST_KEY);
-        } catch {
-          // ignore
-        }
+        } catch (e) {}
       },
       enterGuest: () => {
         setIsGuest(true);
-        (async () => {
-          try {
-            const AsyncStorage = (await import('@react-native-async-storage/async-storage')).default;
-            await AsyncStorage.setItem(GUEST_KEY, '1');
-          } catch {
-            // ignore
-          }
-        })();
+        AsyncStorage.setItem(GUEST_KEY, '1').catch(() => {});
       },
       exitGuest: () => {
         setIsGuest(false);
-        (async () => {
-          try {
-            const AsyncStorage = (await import('@react-native-async-storage/async-storage')).default;
-            await AsyncStorage.removeItem(GUEST_KEY);
-          } catch {
-            // ignore
-          }
-        })();
+        AsyncStorage.removeItem(GUEST_KEY).catch(() => {});
       },
     }),
-    [session, loading, isGuest],
+    [session, loading, isGuest]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

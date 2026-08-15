@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { TextInput, Pressable, StyleSheet, Text, View } from 'react-native';
 import { colors, typography } from '../lib/theme';
 import { haptic } from '../lib/haptics';
 import { useAuth } from '../lib/auth';
@@ -73,26 +73,24 @@ export function AuthScreen({ visible, onClose }: Props) {
 
       <View style={styles.field}>
         <Text style={styles.label}>E-mail</Text>
-        <input
-          type="email"
+        <TextInput
+          keyboardType="email-address" autoCapitalize="none"
           value={email}
-          onChange={(e) => setEmail((e.target as HTMLInputElement).value)}
+          onChangeText={(text: string) => setEmail(text)}
           placeholder="vas@email.cz"
-          style={webStyles.input}
+          style={webStyles.input as any}
         />
       </View>
 
       <View style={styles.field}>
         <Text style={styles.label}>Heslo</Text>
-        <input
-          type="password"
+        <TextInput
+          secureTextEntry
           value={password}
-          onChange={(e) => setPassword((e.target as HTMLInputElement).value)}
+          onChangeText={(text: string) => setPassword(text)}
           placeholder="••••••••"
-          style={webStyles.input}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter') submit();
-          }}
+          style={webStyles.input as any}
+          
         />
       </View>
 
@@ -196,11 +194,11 @@ const webStyles = {
     width: '100%',
     backgroundColor: colors.surface2,
     color: colors.text,
-    border: 'none',
+    
     borderRadius: 12,
-    padding: '12px 14px',
+    paddingVertical: 8, paddingHorizontal: 12,
     fontSize: 15,
     fontFamily: 'inherit',
-    outline: 'none',
+    
   },
 };
